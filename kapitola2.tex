@@ -1,0 +1,13 @@
+\chapter{Available tools}
+
+\label{kap:avtools} % id kapitoly pre prikaz ref
+
+In this chapter, we introduce other tools for phage annotation, as well as explain how they differ from our method. One of the most recent tools for phage annotation is multiPhATE \cite{10.1093/bioinformatics/btz258}. It is a high-throughput pipeline driver invoking PhATE annotation pipeline, allowing annotation of a specified set of phage genomes. PhATE uses up to four gene callers: GeneMarkS, Glimmer, Prodigal and PHANOTATE with PHANOTATE being developed most recently and more optimized for use with phage genomes \cite{10.1093/bioinformatics/btz265}.
+As input, multiPhATE uses a configuration file with a list of genomes for PhATE and a set of parameters controlling software execution. The user specifies the names of files in fasta format containing phage genome, output directories, and other data required for genome analysis. The user can also specify some optional analyses.
+\paragraph*{}
+For each genome, PhATE begins by using gene callers previously specified by user to perform gene calling. In case of multiple gene callers being used, PhATEs output is a table containing side-by-side comparisons of the gene calls as well as numbers and lengths of gene calls for each algorithm. It also includes numbers of common and unique calls to each algorithm. 
+\paragraph*{}
+After the gene calling, PhATE uses blastn (nucleotide databases search), blastp (protein databases search) and jackhmmer to identify similarities to the phage genome and predict its gene and peptide sequences using multiple databases: National Center of Biological Information (NCBI) virus genomes, Refseq proteins, refseq genes, virus proteins and Non-Redundant protein sequence database, Swissprot, Phage Annotation Tools and Methods, Kyoto Encyclopedia of Genes and Genomes and a fasta sequence dataset derived from the database of phage Virus Orthologous Groups(pVOG).
+\paragraph*{}
+The output of PhATE includes: output from gene call algorithms, gene and translated peptide files in fasta format, combined-annotation summary files, raw BLAST and HMM outputs, fasta files containing predicted peptides and the members of identified pVOG families where the peptide may be assigned. Using multiPhATE results in all genomes being annotated.
+Our pipeline in large part emulates this behaviour, however there are some differences. While multiPhATE is specialized on annotation of phage sequences, our pipeline is more specialized on identification of phage sequences embedded in bacterial genome. We have also prioritized locating possible endolysin sequences as opposed to annotating the entire genome.
