@@ -1,0 +1,20 @@
+\chapter*{Introduction} % chapter* je necislovana kapitola
+\addcontentsline{toc}{chapter}{Introduction} % rucne pridanie do obsahu
+\markboth{Introduction}{Introduction} % vyriesenie hlaviciek
+
+\paragraph*{}
+In present, overuse of antibiotics lead to evolution of multiresistant bacteria immune to larger amount of antiotics \cite{nikaido2009multidrug}. This is facilitated by the ability of bacteria to relatively quickly adapt to their enviroment. In presence of antibiotics, the surviving bacteria adapt to unfavourable conditions by gaining resistance, making antibiotics less effective. Since antibiotics are the main remedy in combating bacterial infections, infections caused by multiresistant bacteria are difficult to treat, making them dangerous and possibly deadly \cite{mckenna2013last}. To prevent such bacteria from potentially gaining resistance to every available antibiotic, several types of antibiotics are kept and not in use to act as the last resort against highly resistant bacteria.
+\paragraph*{}
+Since the last resort antibiotics only act as a buffer, making them a temporary solution, and discovery of new antibiotics being difficult and time consuming, research is conducted to develop new methods to treat bacterial infections. One of the methods developed is phage therapy \cite{vandenheuvel2015bacteriophage}. This method is based on the ability of a bacteriophage to infect and kill bacteria as a byproduct of the reproduction of the bacteriophage during its lifecycle \cite{gordillo2019phage}. The protein used to disintegrate the cellular membranes of the bacteria is called endolysin. Since the disintegration of cellular membranes is sufficient to kill the bacteria, application of endolysins to bacteria consequenty causes death of the bacteria. 
+\paragraph*{}
+Despite the need for discovery of endolysins, not many tools for analysis of viral genome in general exist \cite{clokie2009bacteriophages}. This is mainly caused by lack of interest in the field in the past. The lack of tools designed for virus analysis forced researchers to work using tools not equipped to work with viral genomes properly, generally designed for analysis of bacterial genome, leading to creation of complex pipelines. Presently, more tools designed for analysis of viral genomes are available. However, many pipelines are yet to adapt these tools into their workflow. Out of the existing pipelines, none are designed to directly output predicted endolysins.
+\paragraph*{}
+To accommodate for this lack of pipeline, the goal of our thesis is to introduce an end-to-end pipeline designed to detect endolysin proteins in raw sequening reads. The pipeline assembles raw paired-end reads from sequencing equipment into contigs, locates sequences coding viral genes, and predicts, which genes have a high likelyhood of being endolysins. In the creation of the pipeline, we prioritize simplicity and accessibility to allow usage of the tool for researchers not accustomed to working with bioinformatic tools.
+\paragraph*{}
+In first chapter of the thesis, we explain advantages of phage therapy compared to antibiotics. We describe the life cycle of a bacteriophage and the role of endolysins in it. Next, we describe structure of endolysins and mechanism behind their behaviour. We also outline common procedures used to aquire samples for analysis.
+\paragraph*{}
+In second chapter, we introduce a few pipelines available for analysis similar to ours and explain main differences between them and our tool.
+\paragraph*{}
+In third chapter, we describe our pipeline. We describe every tool we use in detail and clarify algorithms operating them. In this chapter, we also convey how we use each tool and how we connect them to form a single pipeline.
+\paragraph*{}
+In fourth chapter, we evaluate our pipeline. We explain the method used to obtain data for testing, parameters used in testing and compare results from our pipeline with results from tools described in the second chapter.
