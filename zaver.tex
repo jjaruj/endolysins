@@ -2,3 +2,10 @@
 \addcontentsline{toc}{chapter}{Conclusion} % rucne pridanie do obsahu
 \markboth{Conclusion}{Conclusion} % vyriesenie hlaviciek
 
+Results from our comparison of Phendol with other tools show that Phendol is capable of annotating endolysins with similar or higher accuracy than other annotation pipelines. The biggest contribution of Phendol lies in the simplicity of its usage. While installation of other tools took a significant amount of effort, the installation of Phendol can be accomplished with a single command. For instance, in our effort to compare our tool with RASTtk, we were unable to execute the command line application. We were instead forced to use the online browser version which requires a registration manually approved by the creators of RASTtk. 
+
+Execution of Phendol is also considerably easier. Thanks to Conda, Phendol can be initialized from any directory. The parameters Phendol uses can be adjusted using flags and the only required user input is the location of files for analysis. On the contrary, using multiPhATE requires the input files to be in a particular directory, specific setup using a config file, and preparation of databases beforehand, making multiPhATE cumbersome. 
+
+Since the results of Phendol are predicted endolysins, the tool is more suited for the analysis than the other tools, which produce results that need to be further filtered to leave only endolysins remaining.
+
+Every feature mentioned constitutes a more user-friendly interface, which is one of the goals of this work. In the future, we hope to extend the functionality of Phendol by including more methods to assemble reads. This would allow Phendol to work with different sequencing reads than the currently used paired-end reads as well as facilitate the use of more precise assemblers. We would also like to add the option of automatically updating the used endolysin database to include new and verified endolysins in order to make Phendol more user friendly.
