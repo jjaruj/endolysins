@@ -45,13 +45,13 @@ In B-transformation, the read-pairs are transformed into k-bimers. Each k-bimer 
 \[d - i_{1} + i_{2}\]
 where $i_{1}$ and $i_{2}$ are starting positions of the k-mers on the reads and $d$ is the approximate genomic distance between reads. Since each k-mer is represented in the graph as an edge, the k-bimer is also referred to as a "biedge".
 
-Following B-transformation, H-transformation transforms biedges into h-biedges. Every biedge defined by edges residing on h-paths undergoes this transformation. Since, as mentioned earlier, every edge in the graph belongs to an h-path, H-transformation is performed on all biedges. For biedge with edges $a$ and $b$ and distance between them $d$, an h-biedge $H(a|b,d)$ is constructed as follows:
-\[ H(a|b,d) = (h-edge(a)|h-edge(b),D) \]
-The variables $h-edge(a)$ and $h-edge(b)$ represent h-edge on the same h-path as the edge in question. The value of D is calculated as:
+Following B-transformation, H-transformation transforms biedges into h-biedges. Every biedge defined by edges residing on h-paths undergoes this transformation. Since, as mentioned earlier, every edge in the graph belongs to an h-path, H-transformation is performed on all biedges. For biedge with edges $a$ and $b$ and distance between them $d$, a h-biedge $H(a|b,d)$ is constructed as follows:
+\[ H(a|b,d) = (\text{h-edge}(a)|\text{h-edge}(b),D) \]
+The variables h-edge$(a)$ and h-edge$(b)$ represent h-edge on the same h-path as the edge in question. The value of D is calculated as:
 \[D = d + i_{a} - i_{b}\]
 with $i_{a}$ ($i_{b}$) being an index of which edge from the beginning is $a$ ($b$). By executing this transformation, information about every h-biedge is collected into a histogram. Every histogram is a multiset of h-biedges with the same h-edges. Since the index for edges on the same h-path can be different, the distance estimate specified in h-biedge may vary.
 
-After creating the h-biedge histogram, it undergoes A transformation. The histograms and the paths of the graph are analyzed by a fast fourier transform algorithm. The analysis derives accurate distance estimates between h-edges. Using an adjustment operation, each histogram is transformed into a small number of adjusted h-biedges with distance estimates.
+After creating the h-biedge histogram, it undergoes a transformation. The histograms and the paths of the graph are analyzed by a fast fourier transform algorithm. The analysis derives accurate distance estimates between h-edges. Using an adjustment operation, each histogram is transformed into a small number of adjusted h-biedges with distance estimates.
 
 The h-biedges adjusted with A-transformation are then used by E-transformation to recalculate distances between biedges. For each h-biedge $(\alpha|\beta,D)$, E-transformation creates a set of biedges $(a|b,d)$, where $a$ ($b$) belongs to the same h-path as $\alpha$ ($\beta$). Distance $d$ for each biedge is calulated in the same way as in H-transformation:
 \[ d = D - i_{a} + i_{b} \]
@@ -72,23 +72,23 @@ Phanotate\cite{mcnair2019phanotate} is a gene caller designed to identify the lo
 First, Phanotate creates a weighted graph representing ORFs. As a start for ORF, it allows ATG, GTG and TTG codons. To end an ORF, codons allowed are TAA, TAG and TGA. By default, the minimal length of an ORF is set to 90 nucleotides. In the graph, the nodes represent only start and stop codons. Edges between them have different meanings depending on what nodes they connect. Edges connecting the start node with the following stop node in the same read frame and on the same strand of DNA represent ORF. Gaps are represented by edges connecting the stop codon and either subsequent start codon in any reading frame on the same strand or subsequent stop codon on an alternate DNA strand. Overlaps are also represented by edges connecting the stop codon. However, they connect to either the preceding start codon in another reading frame on the same strand or the preceding stop codon on an alternate strand. Since phages seldom have gaps between ORFs, only ORFs separated by around 300 bp and less are connected by an edge. If the sequence contains a large section of DNA without an ORF, the ORFs on both sides of the section are connected with an edge with a linear penalty.
 
 The weight of the edges is calculated based on their nature. For the edge representing ORF, Phanotate calculates weight as an adjusted likelihood of not finding a stop codon in an ORF of the length. This is done by first counting the fraction of each base in each ORF. This then determines the probability of encountering a specific end codon, which is used to calculate the probability of encountering any stop codon:
-\[ P(stop) = P(TAA) + P(TAG) + P(TGA) \]
+\[ P(\text{stop}) = P(\text{TAA}) + P(\text{TAG}) + P(\text{TGA}) \]
 Calculated probability is then used to calculate the probability of not encountering any stop codon:
-\[ P(not stop) = 1 - P(stop) \]
+\[ P(\text{not stop}) = 1 - P(\text{stop}) \]
 The P(not stop) value is sufficient in genomes having an average content of nucleotides G and C (GC content). To avoid the creation of spurious ORFs with substantial length in genomes with high GC content, Phanotate utilizes minimum and maximum GC frame plots (GCFP). The GCFP are generated in several steps. 
 
 First, three read frames of the genome are read starting from an appropriate base and looking at a codon starting with that base to calculate the percentage of GC bases on a 120 bp window of each frame. Next, by iterating through codons of a set of ORFs starting with the ATG codon, Phanotate determines, which position of codon has the highest GC content and maintains a running total for that position. For a minimal GC frame plot, the process determines the lowest GC content. This results in a set of frequencies of GC bases for each of the three positions in ORFs starting with the ATG codon. The frequencies are then used to estimate the favoured reading frame at any location. Each of the frequencies is then divided by the highest, resulting in values ranging between zero and one, with one being the maximal or minimal GC frame. These values are then used to exponentiate P(not stop).
 
 The scores of ORFs are further modified by the weighted ribosomal-binding site (RBS) score. The RBS score is determined using the Shine-Dalgarno RBS system \cite{hyatt2010prodigal}. ORF scores are adjusted more by the probability of the first codon being a start. The probability is calculated as a normalized frequency of start codons from genes on 2133 phage genomes contained in GenBank. The weight of edges representing ORF is negated in the final calculation to denote them as favourable in the graph. The final calculation of the weight of the edge representing ORF is:
-\[ w_{orf} = - \frac{1}{\prod\limits_{c=1}^{codons}(P(not stop)^{GCFPmax_{maxGCframe(c)} GCFPmin_{minGCframe(c)}})} * RBS * START \]
+\[ w_{orf} = - \frac{1}{\prod\limits_{c=1}^{\text{codons}}(P(\text{not stop})^{\text{GCFPmax}_{\text{maxGCframe(c)}} \text{GCFPmin}_{\text{minGCframe(c)}}})} \cdot \text{RBS} \cdot \text{START} \]
 
 In cases, where the edge represents a gap or an overlap, the next ORF can be on any strand of the DNA. Since the phage genes tend to be on the same strand, the switch of strands is penalised by adding a multiplicative inverse of the probability of switch to the resulting weight of the edge. The probability is expressed by a variable P(switch) attaining a value of 0 or 0.05 calculated from a set of annotated genes from 2133 phage genomes available on GenBank.
 
 The weight of the gap is calculated using a similar method to the weight of ORF. The differences are that gaps are not corrected by the GC frame plot and that the average probability of not finding a stop codon is genome-wide and exponentiated by the length of the gap. In the case of a switch, a multiplicative inverse of variable P(switch) is added to the multiplicative inverse of the calculated probability resulting in the equation:
-\[w_{gap} = \frac{1}{\underline{P}(not stop)^{len}} + \frac{1}{P(switch)}\]
+\[w_{gap} = \frac{1}{\underline{P}(\text{not stop})^{len}} + \frac{1}{P(\text{switch})}\]
 
 For edges representing overlaps, the weight is calculated as the average of the two weights of the ORFs in the overlap by the length of the overlap. Similarly to the weight of the gap, in the case of a switch, a multiplicative inverse of variable P(switch) is added, resulting in an equation:
-\[w_{gap} = \frac{1}{(\frac{P(not stop)_{1} + P(not stop)_{2}}{2})^{len}} + \frac{1}{P(switch)}\]
+\[w_{gap} = \frac{1}{(\frac{P(\text{not stop})_{1} + P(\text{not stop})_{2}}{2})^{len}} + \frac{1}{P(\text{switch})}\]
 
 The calculated weights are afterwards transformed into distances by using the multiplicative inverse. With the distances and nodes, the resulting weighted graph is processed by the Bellman-Ford algorithm. Phanotate then writes ORFs from the shortest path calculated by the algorithm as an output.
 
@@ -184,5 +184,13 @@ We have decided not to include many different options, as too many algorithmic o
 Conda\cite{yan2018hands} is a package and environment management system designed to install, run and update packages. Its main purpose is to simplify the management and accessibility of packages. Our tool is highly dependent on different tools. To install every tool necessary correctly would require a non-trivial effort. By building our tool as a Conda package, it can be installed by using a single command. Conda then installs our tool as well as all dependencies and resolves any possible conflicts. This simplification of installation makes our tool user-friendly.
 
 \section{Summary}
+
+\begin{figure}[h]
+  \begin{center}
+     \includegraphics[width=0.9\textwidth]{images/pipeline.png}
+     \caption{Steps the pipeline takes while annotating.}\label{fig:pipeline}
+  \end{center}
+\end{figure} 
+
 \paragraph*{}
-Phendol, our workflow, can be summarized in a few steps. The first step is the assembly of contigs. In this step, the tool processes input reads by first creating a subsample from the files using Seqtk and then creating an assembly using SPAdes. The second step is the location of ORFs on the resulting assembly. By using Phanotate, the tool first finds the coordinates of ORFs likely to contain phage genes. Using Bedtools on the coordinates, the Phendol finds DNA sequences of the ORFs. These ORFs are used in the third step. The third step is the comparison with an endolysin database. In this step, Phendol translates DNA into protein sequences using Transeq. Using Blast, the database of endolysins is searched for matches to translated sequences. The fourth step is the filtering of endolysins. In this final step, sequences are filtered by Blast2out to leave only those our tool assumes to be endolysins. The success of this assumption is evaluated in the next chapter.
+Phendol, our workflow, can be summarized in a few steps (Figure \ref{fig:pipeline}). The first step is the assembly of contigs. In this step, the tool processes input reads by first creating a subsample from the files using Seqtk and then creating an assembly using SPAdes. The second step is the location of ORFs on the resulting assembly. By using Phanotate, the tool first finds the coordinates of ORFs likely to contain phage genes. Using Bedtools on the coordinates, the Phendol finds DNA sequences of the ORFs. These ORFs are used in the third step. The third step is the comparison with an endolysin database. In this step, Phendol translates DNA into protein sequences using Transeq. Using Blast, the database of endolysins is searched for matches to translated sequences. The fourth step is the filtering of endolysins. In this final step, sequences are filtered by Blast2out to leave only those our tool assumes to be endolysins. The success of this assumption is evaluated in the next chapter.
